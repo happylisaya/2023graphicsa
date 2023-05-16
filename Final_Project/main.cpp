@@ -1,44 +1,73 @@
-///week12-5_TRT_keyboard_mouse 要用 keyboard mouse 來操控
 #include <stdio.h>
 #include <GL/glut.h>
-FILE * fout = NULL; ///step02-2 一開始,檔案沒有開, NULL
-FILE * fin = NULL; ///step02-2 要讀檔用的指標, 一開始也是 NULL
-float teapotX=0, teapotY=0; ///幫我們看移動值
-float angle=0, angle2=0, angle3=0;///step03-2 擺動作
+#include "glm.h"
+GLMmodel * head = NULL;
+GLMmodel * body = NULL;
+GLMmodel * uparmR = NULL;
+GLMmodel * lowarmR = NULL;
+int show[4] = {0, 1, 0, 0};
+void keyboard(unsigned char key, int x, int y) {
+    if(key=='0') show[0] = !show[0];
+    if(key=='1') show[1] = !show[1];
+    if(key=='2') show[2] = !show[2];
+    if(key=='3') show[3] = !show[3];
+    glutPostRedisplay();
+}
+FILE * fout = NULL;
+FILE * fin = NULL;
+float teapotX=0, teapotY=0;
+float angle=0, angle2=0, angle3=0;
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glPushMatrix();
-        ///glTranslatef(teapotX, teapotY, 0);
-        ///glTranslatef(????); ///step03-2 擺動作
-        glRotatef(angle, 0, 0, 1);///step03-2 擺動作
-        glTranslatef(0.400000, -0.060000, 0);///step03-2
-        ///glTranslatef(teapotX, teapotY, 0);///step03-2 擺動作
-        glutSolidTeapot( 0.3 );
+        glScalef(0.2, 0.2, 0.2);
+        if(body==NULL){///week13 step02-1
+            head = glmReadOBJ("model/head.obj");
+            body = glmReadOBJ("model/body.obj");
+            uparmR = glmReadOBJ("model/uparmR.obj");
+            lowarmR = glmReadOBJ("model/lowarmR.obj");
+        }
+        glColor3f(1,0,0);
+        if(show[0]) glmDraw(head, GLM_MATERIAL);
+        glColor3f(0,1,0);
+        if(show[1]) glmDraw(body, GLM_MATERIAL);
+        glPushMatrix();
+            glTranslatef(teapotX, teapotY, 0);
+
+            if(show[2]) glmDraw(uparmR, GLM_MATERIAL);
+        glPopMatrix();
+        if(show[3]) glmDraw(lowarmR, GLM_MATERIAL);
     glPopMatrix();
     glutSwapBuffers();
+}
+int oldX = 0, oldY = 0;
+void motion(int x, int y){
+    teapotX += (x - oldX)/150.0;
+    teapotY -= (y - oldY)/150.0;
+    oldX = x;
+    oldY = y;
+    printf("glTranslatef(%f, %f, 0);\n", teapotX, teapotY);
+    glutPostRedisplay();
 }
 void mouse(int button, int state, int x, int y)
 {
     if(state==GLUT_DOWN){
-        teapotX = (x-150)/150.0;
-        teapotY = (150-y)/150.0;
+        oldX = x;
+        oldY = y;
         angle = x;
-        printf("glTranslatef(%f, %f, 0);\n", teapotX, teapotY);
-        if(fout==NULL) fout = fopen("file4.txt", "w"); ///step02-2 沒開檔,就開
-        ///fprintf(fout, "%f %f\n", teapotX, teapotY); ///step02-2 要再存座標
     }
     display();
 }
-void keyboard(unsigned char key, int x, int y) ///step02-2 keyboard函式
-{
-    if(fin==NULL){ ///step02-2 如果檔案還沒 fopen(), 就開它
-        fclose(fout); ///前面mouse會開fout指標, 所以要關掉
-        fin = fopen("file4.txt", "r"); ///step02-2 沒開檔,就開
-    }
-    ///fscanf(fin, "%f %f", &teapotX, &teapotY); ///step02-2 真的讀檔
-    display(); ///step02-2 重畫畫面
-}
+//void keyboard(unsigned char key, int x, int y) ///step02-2 keyboard嚙賜式
+//{
+//    if(fin==NULL){ ///step02-2 嚙緘嚙瘦嚙褕殷蕭嚙誶沒 fopen(), 嚙瞇嚙罷嚙踝蕭
+//        fclose(fout); ///嚙箴嚙踝蕭mouse嚙罵嚙罷fout嚙踝蕭嚙踝蕭, 嚙課以嚙緯嚙踝蕭嚙踝蕭
+//        fin = fopen("file4.txt", "r"); ///step02-2 嚙磅嚙罷嚙踝蕭,嚙瞇嚙罷
+//    }
+//    ///fscanf(fin, "%f %f", &teapotX, &teapotY); ///step02-2 嚙線嚙踝蕭讀嚙踝蕭
+//    display(); ///step02-2 嚙踝蕭嚙箴嚙箴嚙踝蕭
+//}
 int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
@@ -47,7 +76,8 @@ int main(int argc, char** argv)
 
     glutDisplayFunc(display);
     glutMouseFunc(mouse);
-    glutKeyboardFunc(keyboard); ///step02-2 keyboard要做事囉(開檔、讀檔)
+    glutMotionFunc(motion);
+    glutKeyboardFunc(keyboard);
 
     glutMainLoop();
 }
