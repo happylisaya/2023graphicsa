@@ -5,8 +5,8 @@ GLMmodel * head = NULL;
 GLMmodel * body = NULL;
 GLMmodel * uparmR = NULL;
 GLMmodel * lowarmR = NULL;
-int show[4] = {1, 1, 1, 1};
-int ID=0;
+int show[4] = {0, 1, 1, 0};
+int ID = 2;
 void keyboard(unsigned char key, int x, int y) {
     if(key=='0') ID = 0;
     if(key=='1') ID = 1;
@@ -36,6 +36,9 @@ void display()
         if(ID==1) glColor3f(1, 0, 0);
         else glColor3f(1,1,1);
         if(show[1]) glmDraw(body, GLM_MATERIAL);
+        glTranslatef(-1.200000, +0.453333, 0);
+        glRotatef(angle, 0, 0, 1);
+        glTranslatef(1.200000, -0.453333,0);
 
         if(ID==2) glColor3f(1, 0, 0);
         else glColor3f(1,1,1);
@@ -47,7 +50,8 @@ void display()
         glTranslated(teapotX, teapotY, 0);
 
         glPopMatrix();
-        glPopMatrix();
+        glColor3f(0, 1, 0);
+        glutSolidTeapot( 0.02 );
     glutSwapBuffers();
 }
 int oldX = 0, oldY = 0;
@@ -56,6 +60,7 @@ void motion(int x, int y){
     teapotY -= (y - oldY)/150.0;
     oldX = x;
     oldY = y;
+    angle = x;
     printf("glTranslatef(%f, %f, 0);\n", teapotX, teapotY);
     glutPostRedisplay();
 }
@@ -73,7 +78,7 @@ int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
-    glutCreateWindow("week12");
+    glutCreateWindow("week14");
 
     glutDisplayFunc(display);
     glutMouseFunc(mouse);
