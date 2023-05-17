@@ -5,8 +5,8 @@ GLMmodel * head = NULL;
 GLMmodel * body = NULL;
 GLMmodel * uparmR = NULL;
 GLMmodel * lowarmR = NULL;
-int show[4] = {0, 1, 1, 0};
-int ID = 2;
+int show[4] = {1, 1, 1, 1};
+int ID = 3;
 void keyboard(unsigned char key, int x, int y) {
     if(key=='0') ID = 0;
     if(key=='1') ID = 1;
@@ -58,6 +58,7 @@ int oldX = 0, oldY = 0;
 void motion(int x, int y){
     teapotX += (x - oldX)/150.0;
     teapotY -= (y - oldY)/150.0;
+    angle += x-oldX;
     oldX = x;
     oldY = y;
     angle = x;
@@ -69,7 +70,7 @@ void mouse(int button, int state, int x, int y)
     if(state==GLUT_DOWN){
         oldX = x;
         oldY = y;
-        angle = x;
+        ///angle = x;
     }
     display();
 }
