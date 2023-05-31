@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <opencv/highgui.h> ///¨Ï¥Î OpenCV 2.1 ¤ñ¸ûÂ²³æ, ¥u­n¥Î High GUI §Y¥i
+#include <opencv/highgui.h> ///ä½¿ç”¨ OpenCV 2.1 æ¯”è¼ƒç°¡å–®, åªè¦ç”¨ High GUI å³å¯
 #include <opencv/cv.h>
 #include <GL/glut.h>
 #include "glm.h"
@@ -13,34 +13,66 @@ GLMmodel * knee1 = NULL, * knee2 = NULL;
 GLMmodel * foot1 = NULL, * foot2 = NULL;
 int myTexture(char * filename)
 {
-    IplImage * img = cvLoadImage(filename); ///OpenCVÅª¹Ï
-    cvCvtColor(img,img, CV_BGR2RGB); ///OpenCVÂà¦â±m (»İ­ncv.h)
-    glEnable(GL_TEXTURE_2D); ///1. ¶}±Ò¶K¹Ï¥\¯à
-    GLuint id; ///·Ç³Æ¤@­Ó unsigned int ¾ã¼Æ, ¥s ¶K¹ÏID
-    glGenTextures(1, &id); /// ²£¥ÍGenerate ¶K¹ÏID
-    glBindTexture(GL_TEXTURE_2D, id); ///¸j©wbind ¶K¹ÏID
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); /// ¶K¹Ï°Ñ¼Æ, ¶W¹L¥]¸Ëªº½d¹ÏT, ´N­«ÂĞ¶K¹Ï
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); /// ¶K¹Ï°Ñ¼Æ, ¶W¹L¥]¸Ëªº½d¹ÏS, ´N­«ÂĞ¶K¹Ï
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); /// ¶K¹Ï°Ñ¼Æ, ©ñ¤j®Éªº¤º´¡, ¥Î³ÌªñÂI
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); /// ¶K¹Ï°Ñ¼Æ, ÁY¤p®Éªº¤º´¡, ¥Î³ÌªñÂI
+    IplImage * img = cvLoadImage(filename); ///OpenCVè®€åœ–
+    cvCvtColor(img,img, CV_BGR2RGB); ///OpenCVè½‰è‰²å½© (éœ€è¦cv.h)
+    glEnable(GL_TEXTURE_2D); ///1. é–‹å•Ÿè²¼åœ–åŠŸèƒ½
+    GLuint id; ///æº–å‚™ä¸€å€‹ unsigned int æ•´æ•¸, å« è²¼åœ–ID
+    glGenTextures(1, &id); /// ç”¢ç”ŸGenerate è²¼åœ–ID
+    glBindTexture(GL_TEXTURE_2D, id); ///ç¶å®šbind è²¼åœ–ID
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); /// è²¼åœ–åƒæ•¸, è¶…éåŒ…è£çš„ç¯„åœ–T, å°±é‡è¦†è²¼åœ–
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); /// è²¼åœ–åƒæ•¸, è¶…éåŒ…è£çš„ç¯„åœ–S, å°±é‡è¦†è²¼åœ–
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); /// è²¼åœ–åƒæ•¸, æ”¾å¤§æ™‚çš„å…§æ’, ç”¨æœ€è¿‘é»
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); /// è²¼åœ–åƒæ•¸, ç¸®å°æ™‚çš„å…§æ’, ç”¨æœ€è¿‘é»
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img->width, img->height, 0, GL_RGB, GL_UNSIGNED_BYTE, img->imageData);
     return id;
 }
-
-float teapotX=0, teapotY=0, angle=0, angle2=0, oldX=0, oldY=0;  ///¦³¤£¦P
+FILE * fin = NULL;
+FILE * fout = NULL;
+float teapotX=0, teapotY=0, oldX=0, oldY=0;  ///æœ‰ä¸åŒ
+float angle[20]={}, angle2[20]={};
+int ID=0; ///0:head, 1,2:left, 3,4:right hand, 5,6,7:left leg, 8,9,10:right leg
+void keyboard(unsigned char key, int x, int y) {
+    if(key=='0') ID=0;
+    if(key=='1') ID=1;
+    if(key=='2') ID=2;
+    if(key=='3') ID=3;
+    if(key=='4') ID=4;
+    if(key=='5') ID=5;
+    if(key=='6') ID=6;
+    if(key=='7') ID=7;
+    if(key=='8') ID=8;
+    if(key=='9') ID=9;
+    if(key=='s'){ ///save
+        if(fout==NULL) fout = fopen("motion.txt", "w");
+        for(int i=0; i<20; i++){
+            fprintf(fout, "%.2f ", angle[i] );
+            fprintf(fout, "%.2f ", angle2[i] );
+        }
+        fprintf(fout, "\n");
+        printf("ä½ å¯«äº†1è¡Œ\n");
+    }
+    if(key=='r'){ ///read
+        if(fin==NULL) fin = fopen("motion.txt", "r");
+        for(int i=0; i<20; i++){
+            fscanf(fin, "%f", &angle[i] );
+            fscanf(fin, "%f", &angle2[i] );
+        }
+        glutPostRedisplay();
+    }
+}
 void mouse(int button, int state, int x, int y) {
     oldX = x;
     oldY = y;
 }
 
 void motion(int x, int y) {
-    teapotX += (x - oldX)/10.0; ///¦³¤£¦P
-    teapotY += (oldY - y)/10.0; ///¦³¤£¦P
-    angle += x - oldX;
-    angle2 += y - oldY; ///¦³¤£¦P
+    teapotX += (x - oldX)/10.0; ///æœ‰ä¸åŒ
+    teapotY += (oldY - y)/10.0; ///æœ‰ä¸åŒ
+    angle[ID] += x - oldX;
+    angle2[ID] += y - oldY; ///æœ‰ä¸åŒ
     oldX = x;
-    oldY = y; ///¦³¤£¦P
-    printf("glTranslatef(%.3f , %.3f , 0 );\n", teapotX, teapotY);
+    oldY = y; ///æœ‰ä¸åŒ
+    ///printf("glTranslatef(%.3f , %.3f , 0 );\n", teapotX, teapotY);
     glutPostRedisplay();
 }
 void display() {
@@ -51,29 +83,27 @@ void display() {
         glPushMatrix();
             glColor3f(1,1,1);///glColor3f(1,0,0);
             glScalef(0.03, 0.03, 0.03);
-            ///glRotatef(angle, 0, 1, 0);
+            glRotatef(180, 0, 1, 0);
             glmDraw(body, GLM_MATERIAL | GLM_TEXTURE); ///glmDraw(gundam, GLM_MATERIAL | GLM_TEXTURE);
 
             glPushMatrix();
                 glTranslatef(0.000 , +22.300 , 0 );
-                //glRotatef(angle, 0, 1, 0);
-                //glRotatef(angle2, 1, 0, 0);
+                glRotatef(angle[0], 0, 1, 0);
+                glRotatef(angle2[0], 1, 0, 0);
                 glTranslatef(0.000 , -22.300 , 0 );
-                ///glTranslatef(teapotX, teapotY, 0);
                 glmDraw(head, GLM_MATERIAL | GLM_TEXTURE);
             glPopMatrix();
 
             glPushMatrix();
                 glTranslatef(-3.800 , +21.200 , 0 );
-                //glRotatef(angle, 0, 1, 0);
-                //glRotatef(angle2, 1, 0, 0);
+                glRotatef(angle[1], 0, 1, 0);
+                glRotatef(angle2[1], 1, 0, 0);
                 glTranslatef(3.800 , -21.200 , 0 );
-                ///glTranslatef(teapotX, teapotY, 0);
                 glmDraw(arm1, GLM_MATERIAL | GLM_TEXTURE);
                 glPushMatrix();
                     glTranslatef(-4.300 , +18.600 , 0 );
-                    //glRotatef(angle, 0, 1, 0);
-                    //glRotatef(angle2, 1, 0, 0);
+                    glRotatef(angle[2], 0, 1, 0);
+                    glRotatef(angle2[2], 1, 0, 0);
                     glTranslatef(4.300 , -18.600 , 0 );
                     glmDraw(hand1, GLM_MATERIAL | GLM_TEXTURE);
                 glPopMatrix();
@@ -81,15 +111,14 @@ void display() {
 
             glPushMatrix();
                 glTranslatef(+3.800 , +21.200 , 0 );
-                //glRotatef(angle, 0, 1, 0);
-                //glRotatef(angle2, 1, 0, 0);
+                glRotatef(angle[3], 0, 1, 0);
+                glRotatef(angle2[3], 1, 0, 0);
                 glTranslatef(-3.800 , -21.200 , 0 );
-                ///glTranslatef(teapotX, teapotY, 0);
                 glmDraw(arm2, GLM_MATERIAL | GLM_TEXTURE);
                 glPushMatrix();
                     glTranslatef(+4.300 , +18.600 , 0 );
-                    //glRotatef(angle, 0, 1, 0);
-                    //glRotatef(angle2, 1, 0, 0);
+                    glRotatef(angle[4], 0, 1, 0);
+                    glRotatef(angle2[4], 1, 0, 0);
                     glTranslatef(-4.300 , -18.600 , 0 );
                     glmDraw(hand2, GLM_MATERIAL | GLM_TEXTURE);
                 glPopMatrix();
@@ -97,48 +126,48 @@ void display() {
 
             glmDraw(bot, GLM_MATERIAL | GLM_TEXTURE);
 
-            glPushMatrix();///¥ª¤j»L
+            glPushMatrix();///å·¦å¤§è…¿
                 glTranslatef(-2.000 , +14.100 , 0 );
-                //glRotatef(angle, 0, 1, 0);
-                //glRotatef(angle2, 1, 0, 0);
+                glRotatef(angle[5], 0, 1, 0);
+                glRotatef(angle2[5], 1, 0, 0);
                 glTranslatef(2.000 , -14.100 , 0 );
                 glmDraw(leg1, GLM_MATERIAL | GLM_TEXTURE);
 
                 glPushMatrix();
                     glTranslatef(-2.000 , +10.500 , 0 );
-                    //glRotatef(angle, 0, 1, 0);
-                    //glRotatef(angle2, 1, 0, 0);
+                    glRotatef(angle[6], 0, 1, 0);
+                    glRotatef(angle2[6], 1, 0, 0);
                     glTranslatef(2.000 , -10.500 , 0 );
                     glmDraw(knee1, GLM_MATERIAL | GLM_TEXTURE);
 
                     glPushMatrix();
                         glTranslatef(-2.000 , +3.000 , 0 );
-                        glRotatef(angle, 0, 1, 0);
-                        glRotatef(angle2, 1, 0, 0);
+                        glRotatef(angle[7], 0, 1, 0);
+                        glRotatef(angle2[7], 1, 0, 0);
                         glTranslatef(2.000 , -3.000 , 0 );
                         glmDraw(foot1, GLM_MATERIAL | GLM_TEXTURE);
                     glPopMatrix();
                 glPopMatrix();
             glPopMatrix();
 
-            glPushMatrix();///¥k¤j»L
+            glPushMatrix();///å³å¤§è…¿
                 glTranslatef(+2.000 , +14.100 , 0 );
-                //glRotatef(angle, 0, 1, 0);
-                //glRotatef(angle2, 1, 0, 0);
+                glRotatef(angle[8], 0, 1, 0);
+                glRotatef(angle2[8], 1, 0, 0);
                 glTranslatef(-2.000 , -14.100 , 0 );
                 glmDraw(leg2, GLM_MATERIAL | GLM_TEXTURE);
 
                 glPushMatrix();
                     glTranslatef(+2.000 , +10.500 , 0 );
-                    glRotatef(angle, 0, 1, 0);
-                    glRotatef(angle2, 1, 0, 0);
+                    glRotatef(angle[9], 0, 1, 0);
+                    glRotatef(angle2[9], 1, 0, 0);
                     glTranslatef(-2.000 , -10.500 , 0 );
                     glmDraw(knee2, GLM_MATERIAL | GLM_TEXTURE);
 
                     glPushMatrix();
                         glTranslatef(+2.000 , +3.000 , 0 );
-                        glRotatef(angle, 0, 1, 0);
-                        glRotatef(angle2, 1, 0, 0);
+                        glRotatef(angle[10], 0, 1, 0);
+                        glRotatef(angle2[10], 1, 0, 0);
                         glTranslatef(-2.000 , -3.000 , 0 );
                         glmDraw(foot2, GLM_MATERIAL | GLM_TEXTURE);
                     glPopMatrix();
@@ -146,8 +175,8 @@ void display() {
             glPopMatrix();
 
         glPopMatrix();
-        glColor3f(0,1,0);///¤¤¤ßÂIªº¦ì¸m
-        glutSolidTeapot( 0.01 );///¤¤¤ßÂIªº¦ì¸m
+        glColor3f(0,1,0);///ä¸­å¿ƒé»çš„ä½ç½®
+        glutSolidTeapot( 0.01 );///ä¸­å¿ƒé»çš„ä½ç½®
     glPopMatrix();
 
     glutSwapBuffers();
@@ -161,6 +190,7 @@ int main(int argc, char** argv)
     glutDisplayFunc(display);
     glutMotionFunc(motion);
     glutMouseFunc(mouse);
+    glutKeyboardFunc(keyboard);
 
     head = glmReadOBJ("model/head.obj");
     body = glmReadOBJ("model/body.obj"); ///gundam = glmReadOBJ("model/gundam.obj");
