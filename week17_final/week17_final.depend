@@ -1,7 +1,9 @@
 # depslib dependency file v1.0
-1685990618 source:c:\users\lisa\desktop\2023graphicsa\week17_final\main.cpp
-	<GL/glut.h>
+1685997580 source:c:\users\lisa\desktop\2023graphicsa\week17_final\main.cpp
 	<stdio.h>
+	<opencv/highgui.h>
+	<opencv/cv.h>
+	<GL/glut.h>
 	"glm.h"
 
 1685975016 c:\users\lisa\desktop\2023graphicsa\final_project\freeglut\include\gl\glut.h

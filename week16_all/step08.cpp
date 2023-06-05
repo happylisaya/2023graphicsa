@@ -5,7 +5,6 @@
 #include "glm.h"
 GLMmodel * head = NULL;
 GLMmodel * body = NULL;
-GLMmodel * arm1 = NULL, * arm2 = NULL;
 
 int myTexture(char * filename)
 {
@@ -42,23 +41,19 @@ void display() {
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glPushMatrix();
         glColor3f(1,1,1);
+        //glTranslatef(0, -0.7, 0);
+        glScalef(2, 2, 2);
         glScalef(0.03, 0.03, 0.03);
         //glRotatef(angle, 0, 1, 0);
         glmDraw(body, GLM_MATERIAL | GLM_TEXTURE);
         glPushMatrix();
-            glTranslatef(+0.100 , +22.100 , 0 );
-            glRotatef(angle, 0, 1, 0);
-            glRotatef(angle2, 1, 0, 0);
-            glTranslatef(-0.100 , -22.100 , 0 );
+            glTranslatef(+0.000 , +10.700 , 0 );
+            //glRotatef(angle, 0, 1, 0);
+            //glRotatef(angle2, 1, 0, 0);
+            //glTranslatef(-0.000 , -10.700 , 0 );
             //glTranslatef(teapotX, teapotY, 0);
             glmDraw(head, GLM_MATERIAL | GLM_TEXTURE);
         glPopMatrix();
-
-
-        glPushMatrix();
-            glmDraw(arm1, GLM_MATERIAL | GLM_TEXTURE);   //×óÓÒÞD
-        glPopMatrix();
-
 
 
     glPopMatrix();
@@ -80,8 +75,6 @@ int main(int argc, char** argv)
 
     head = glmReadOBJ("model/head.obj");
     body = glmReadOBJ("model/body.obj");
-    arm1 = glmReadOBJ("model/arm1.obj");
-    arm2 = glmReadOBJ("model/arm1.obj");
     myTexture("model/Diffuse.jpg");
     glEnable(GL_DEPTH_TEST);
 

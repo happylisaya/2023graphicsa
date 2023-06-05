@@ -3,9 +3,14 @@
 #include <opencv/cv.h>
 #include <GL/glut.h>
 #include "glm.h"
+
 GLMmodel * head = NULL;
 GLMmodel * body = NULL;
-GLMmodel * arm1 = NULL, * arm2 = NULL;
+GLMmodel * left_arm = NULL;
+GLMmodel * left_foot = NULL;
+GLMmodel * right_arm = NULL;
+GLMmodel * right_foot = NULL;
+GLMmodel * leg = NULL;
 
 int myTexture(char * filename)
 {
@@ -22,6 +27,7 @@ int myTexture(char * filename)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img->width, img->height, 0, GL_RGB, GL_UNSIGNED_BYTE, img->imageData);
     return id;
 }
+
 float teapotX=0, teapotY=0, angle=0, angle2=0, oldX=0, oldY=0;
 void mouse(int button, int state, int x, int y) {
     oldX = x;
@@ -46,19 +52,13 @@ void display() {
         //glRotatef(angle, 0, 1, 0);
         glmDraw(body, GLM_MATERIAL | GLM_TEXTURE);
         glPushMatrix();
-            glTranslatef(+0.100 , +22.100 , 0 );
+            glTranslatef(+0.000 , +4.100 , 0 );
             glRotatef(angle, 0, 1, 0);
             glRotatef(angle2, 1, 0, 0);
-            glTranslatef(-0.100 , -22.100 , 0 );
+            glTranslatef(-0.000 , -4.100 , 0 );
             //glTranslatef(teapotX, teapotY, 0);
-            glmDraw(head, GLM_MATERIAL | GLM_TEXTURE);
+            glmDraw(head, GLM_MATERIAL | GLM_TEXTURE);   //×óÓÒÞD
         glPopMatrix();
-
-
-        glPushMatrix();
-            glmDraw(arm1, GLM_MATERIAL | GLM_TEXTURE);   //×óÓÒÞD
-        glPopMatrix();
-
 
 
     glPopMatrix();
@@ -72,16 +72,20 @@ int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE|GLUT_DEPTH);
-    glutCreateWindow("week16");
+    glutCreateWindow("week17");
 
     glutDisplayFunc(display);
     glutMotionFunc(motion);
     glutMouseFunc(mouse);
 
     head = glmReadOBJ("model/head.obj");
-    body = glmReadOBJ("model/body.obj");
-    arm1 = glmReadOBJ("model/arm1.obj");
-    arm2 = glmReadOBJ("model/arm1.obj");
+    body = glmReadOBJ("model/body.obj"); ///gundam = glmReadOBJ("model/gundam.obj");
+    left_arm = glmReadOBJ("model/left_arm.obj");
+    left_foot = glmReadOBJ("model/left_foot.obj");
+    right_arm = glmReadOBJ("model/right_arm.obj");
+    right_foot = glmReadOBJ("model/right_foot.obj");
+    leg = glmReadOBJ("model/leg.obj");
+
     myTexture("model/Diffuse.jpg");
     glEnable(GL_DEPTH_TEST);
 
