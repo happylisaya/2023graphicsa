@@ -1,0 +1,16 @@
+newmtl Popeye:blinn1SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.29 0.29 0.29
+Ns 0.06
+newmtl Popeye:blinnLeatherSG
+illum 4
+Kd 0.29 0.17 0.11
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.29 0.23 0.19
+Ns 0.06
