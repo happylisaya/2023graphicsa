@@ -1,19 +1,32 @@
 #include <stdio.h>
-#include <opencv/highgui.h> ///Ê¹ÓÃ OpenCV 2.1 ±ÈÝ^º††Î, Ö»ÒªÓÃ High GUI ¼´¿É
+#include <opencv/highgui.h>
 #include <opencv/cv.h>
 #include <GL/glut.h>
 #include "glm.h"
 #include <GL/glut.h>
-const GLfloat light_ambient[]  = { 0.0f, 0.0f, 0.0f, 1.0f };
-const GLfloat light_diffuse[]  = { 1.0f, 1.0f, 1.0f, 1.0f };
-const GLfloat light_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-const GLfloat light_position[] = { 2.0f, 5.0f, 5.0f, 0.0f };
+const GLfloat light_ambient[]  = { 1.0f, 1.0f, 1.0f, 1.0f };
+const GLfloat light_diffuse[]  = { 1.55f, 1.55f, 1.55f, 1.0f };
+const GLfloat light_specular[] = { 0.25f, 0.25f, 0.25f, 1.0f };
+const GLfloat light_position[] = { -15.0f, 50.0f, 100.0f, 1.0f };
 
 const GLfloat mat_ambient[]    = { 0.7f, 0.7f, 0.7f, 1.0f };
 const GLfloat mat_diffuse[]    = { 0.8f, 0.8f, 0.8f, 1.0f };
 const GLfloat mat_specular[]   = { 1.0f, 1.0f, 1.0f, 1.0f };
-const GLfloat high_shininess[] = { 100.0f };
+const GLfloat high_shininess[] = { 0.2f };
 
+
+void reshape(int w, int h) {
+    glViewport(0, 0, w, h);
+    float ar = w / (float) h;
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(60, ar, 0.01, 1000);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(0,0,1,  0,0,0,  0,1,0);
+    glutPostRedisplay();
+}
 void myLight()
 {
     glEnable(GL_DEPTH_TEST);
@@ -35,18 +48,6 @@ void myLight()
     glMaterialfv(GL_FRONT, GL_SHININESS, high_shininess);
 }
 
-float angle = 0; ///step02-1 Ðû¸æglobalÈ«Óò×ƒ”µ angle
-void display()
-{
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ); ///Çå±³¾°
-    glPushMatrix(); ///step02-1 ‚ä·Ý¾Øê‡
-        glRotatef(angle, 0, 1, 0); ///step02-1 ÐýÞD angle ½Ç¶È
-        glutSolidTeapot( 0.3 );
-    glPopMatrix();  ///step02-1 ß€Ô­¾Øê‡
-    glutSwapBuffers();
-    angle++; ///step02-1 °Ñ½Ç¶È++
-}
-
 GLMmodel * head = NULL;
 GLMmodel * body = NULL;
 GLMmodel * left_arm = NULL;
@@ -54,22 +55,6 @@ GLMmodel * right_arm = NULL;
 GLMmodel * leg = NULL;
 GLMmodel * left_foot = NULL;
 GLMmodel * right_foot = NULL;
-
-int myTexture(char * filename)
-{
-    IplImage * img = cvLoadImage(filename);
-    cvCvtColor(img, img, CV_BGR2RGB);
-    glEnable(GL_TEXTURE_2D);
-    GLuint id;
-    glGenTextures(1, &id);
-    glBindTexture(GL_TEXTURE_2D, id);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img->width, img->height, 0, GL_RGB, GL_UNSIGNED_BYTE, img->imageData);
-    return id;
-}
 
 FILE * fin = NULL;
 FILE * fout = NULL;
@@ -113,7 +98,7 @@ void keyboard(unsigned char key, int x, int y) {
             fprintf(fout, "%.2f ", angle2[i] );
         }
         fprintf(fout, "\n");
-        printf("ÄãŒ‘ÁË1ÐÐ\n");
+        printf("ä½ å¯«äº†1è¡Œ\n");
     }
     if(key=='r'){
         if(fin==NULL) fin = fopen("motion.txt", "r");
@@ -144,43 +129,47 @@ void motion(int x, int y) {
     glutPostRedisplay();
 }
 void display() {
+    glClearColor(200/255.0, 255/255.0, 255/255.0, 1);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
         glPushMatrix();
-            glScalef(6, 6, 6);
+            glScalef(3, 3, 3);
+            //glRotatef(180, 0, 1, 0);
             glTranslatef(0 , -0.1, 0);
             glPushMatrix();
                 glColor3f(1,1,1);
                 glScalef(0.03, 0.03, 0.03);
                 glRotatef(angle[6], 0, 1, 0);
+                glRotatef(angle2[6], 1, 0, 0);
                 glRotatef(0, 0, 1, 0);
-                glmDraw(body, GLM_MATERIAL | GLM_TEXTURE);
+
+                glmDraw(body, GLM_SMOOTH | GLM_MATERIAL | GLM_TEXTURE);
 
                 ///head
                 glPushMatrix();
                     glTranslatef(+0.000 , +4.100 , 0 );
-                    glRotatef(angle[0], 0, 1, 0);  //×óÓÒÞD
-                    glRotatef(angle2[0], 1, 0, 0);  //ÉÏÏÂÞD
+                    glRotatef(angle[0], 0, 1, 0);  //ï¿½ï¿½ï¿½ï¿½ï¿½D
+                    glRotatef(angle2[0], 1, 0, 0);  //ï¿½ï¿½ï¿½ï¿½ï¿½D
                     glTranslatef(-0.000 , -4.100 , 0 );
-                    glmDraw(head, GLM_MATERIAL | GLM_TEXTURE);
+                    glmDraw(head, GLM_SMOOTH | GLM_MATERIAL | GLM_TEXTURE);
                 glPopMatrix();
 
                 ///left_arm
                 glPushMatrix();
                     glTranslatef(-1.300 , +4.700 , 0 );
                     glRotatef(angle[1], 0, 1, 0);
-                    glRotatef(angle2[1], 0, 0, 1);
+                    glRotatef(angle2[1], 1, 0, 1);
                     glTranslatef(+1.300 , -4.700 , 0 );
-                    glmDraw(left_arm, GLM_MATERIAL | GLM_TEXTURE);
+                    glmDraw(left_arm, GLM_SMOOTH | GLM_MATERIAL | GLM_TEXTURE);
                 glPopMatrix();
 
                 ///right_arm
                 glPushMatrix();
                     glTranslatef(+1.300 , +4.700 , 0 );
                     glRotatef(angle[2], 0, 1, 0);
-                    glRotatef(angle2[2], 1, 0, 0);
+                    glRotatef(angle2[2], 1, 0, 1);
                     glTranslatef(-1.300 , -4.700 , 0 );
                     //glTranslatef(teapotX, teapotY, 0);
-                    glmDraw(right_arm, GLM_MATERIAL | GLM_TEXTURE);
+                    glmDraw(right_arm, GLM_SMOOTH | GLM_MATERIAL | GLM_TEXTURE);
                 glPopMatrix();
 
                 ///leg
@@ -189,7 +178,7 @@ void display() {
                     glRotatef(angle[3], 0, 1, 0);
                     glTranslatef(0.000 , -2.800 , 0 );
                     //glTranslatef(teapotX, teapotY, 0);
-                    glmDraw(leg, GLM_MATERIAL | GLM_TEXTURE);
+                    glmDraw(leg, GLM_SMOOTH | GLM_MATERIAL | GLM_TEXTURE);
                 glPopMatrix();
 
                 ///left_foot
@@ -199,7 +188,7 @@ void display() {
                     glRotatef(angle2[4], 1, 0, 0);
                     glTranslatef(+0.500 , -0.700 , +0.3 );
                     //glTranslatef(teapotX, teapotY, 0);
-                    glmDraw(left_foot, GLM_MATERIAL | GLM_TEXTURE);
+                    glmDraw(left_foot, GLM_SMOOTH | GLM_MATERIAL | GLM_TEXTURE);
                 glPopMatrix();
 
                 ///right_foot
@@ -209,13 +198,13 @@ void display() {
                     glRotatef(angle2[5], 1, 0, 0);
                     glTranslatef(-0.500 , -0.700 , +0.3 );
                     //glTranslatef(teapotX, teapotY, 0);
-                    glmDraw(right_foot, GLM_MATERIAL | GLM_TEXTURE);
+                    glmDraw(right_foot, GLM_SMOOTH | GLM_MATERIAL | GLM_TEXTURE);
                 glPopMatrix();
 
 
             glPopMatrix();
-            glColor3f(0,1,0);
-            glutSolidTeapot( 0.01 );
+            //glColor3f(0,1,0);
+            //glutSolidTeapot( 0.01 );
         glPopMatrix();
 
     glutSwapBuffers();
@@ -230,6 +219,7 @@ int main(int argc, char** argv)
     glutMotionFunc(motion);
     glutMouseFunc(mouse);
     glutKeyboardFunc(keyboard);
+    glutReshapeFunc(reshape);
 
     head = glmReadOBJ("model/head.obj");
     body = glmReadOBJ("model/body.obj");
@@ -242,6 +232,6 @@ int main(int argc, char** argv)
 
     //glEnable(GL_DEPTH_TEST);
 
-    myLight(); ///step02-2 ÎÒ‚ƒ×Ô¼ºŒ‘Ò»‚€ myLight()º¯Ê½, ÑeÃæÓÐºÜ¶àÐÐ!
+    myLight();
     glutMainLoop();
 }
