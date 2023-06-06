@@ -1,11 +1,11 @@
 # depslib dependency file v1.0
-1686052098 source:c:\users\lisa\desktop\2023graphicsa\week17_final\main.cpp
+1686056793 source:c:\users\lisa\desktop\2023graphicsa\week17_final\main.cpp
 	<stdio.h>
 	<opencv/highgui.h>
 	<opencv/cv.h>
 	<GL/glut.h>
 	"glm.h"
-	<GL/glut.h>
+	"CMP3_MCI.h"
 
 1685975016 c:\users\lisa\desktop\2023graphicsa\final_project\freeglut\include\gl\glut.h
 	"freeglut_std.h"
@@ -31,4 +31,23 @@
 	<string.h>
 	<assert.h>
 	"glm.h"
+
+1685975016 c:\users\lisa\desktop\2023graphicsa\week17_final\freeglut\include\gl\glut.h
+	"freeglut_std.h"
+
+1685975016 c:\users\lisa\desktop\2023graphicsa\week17_final\freeglut\include\gl\freeglut_std.h
+	<windows.h>
+	<EGL/egl.h>
+	<GLES/gl.h>
+	<GLES2/gl2.h>
+	<OpenGL/gl.h>
+	<OpenGL/glu.h>
+	<GL/gl.h>
+	<GL/glu.h>
+	<stdlib.h>
+
+1685975016 c:\users\lisa\desktop\2023graphicsa\week17_final\cmp3_mci.h
+	<string>
+	<windows.h>
+	<mmsystem.h>
 

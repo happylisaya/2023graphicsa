@@ -3,7 +3,9 @@
 #include <opencv/cv.h>
 #include <GL/glut.h>
 #include "glm.h"
-#include <GL/glut.h>
+#include "CMP3_MCI.h"
+CMP3_MCI myMP3;
+
 const GLfloat light_ambient[]  = { 1.0f, 1.0f, 1.0f, 1.0f };
 const GLfloat light_diffuse[]  = { 1.55f, 1.55f, 1.55f, 1.0f };
 const GLfloat light_specular[] = { 0.25f, 0.25f, 0.25f, 1.0f };
@@ -229,6 +231,9 @@ int main(int argc, char** argv)
 
     left_foot = glmReadOBJ("model/left_foot.obj");
     right_foot = glmReadOBJ("model/right_foot.obj");
+
+    myMP3.Load("Popeye_BGM.mp3");
+    myMP3.Play();
 
     //glEnable(GL_DEPTH_TEST);
 

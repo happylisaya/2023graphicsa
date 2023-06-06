@@ -17,7 +17,7 @@
 			</Target>
 			<Target title="Release">
 				<Option output="bin/Release/week17_final" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="C:/Users/Lisa/Desktop/2023graphicsa/Final_Project/freeglut/bin" />
+				<Option working_dir="." />
 				<Option object_output="obj/Release/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
@@ -31,7 +31,7 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add directory="C:/Users/Lisa/Desktop/2023graphicsa/Final_Project/freeglut/include" />
+			<Add directory="." />
 		</Compiler>
 		<Linker>
 			<Add library="glut32" />
