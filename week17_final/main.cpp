@@ -98,7 +98,7 @@ void keyboard(unsigned char key, int x, int y) {
             fprintf(fout, "%.2f ", angle2[i] );
         }
         fprintf(fout, "\n");
-        printf("ä½ å¯«äº†1è¡Œ\n");
+        printf("ÄãŒ‘ÁË1ÐÐ\n");
     }
     if(key=='r'){
         if(fin==NULL) fin = fopen("motion.txt", "r");
@@ -147,8 +147,8 @@ void display() {
                 ///head
                 glPushMatrix();
                     glTranslatef(+0.000 , +4.100 , 0 );
-                    glRotatef(angle[0], 0, 1, 0);  //ï¿½ï¿½ï¿½ï¿½ï¿½D
-                    glRotatef(angle2[0], 1, 0, 0);  //ï¿½ï¿½ï¿½ï¿½ï¿½D
+                    glRotatef(angle[0], 0, 1, 0);
+                    glRotatef(angle2[0], 1, 0, 0);
                     glTranslatef(-0.000 , -4.100 , 0 );
                     glmDraw(head, GLM_SMOOTH | GLM_MATERIAL | GLM_TEXTURE);
                 glPopMatrix();
@@ -166,7 +166,7 @@ void display() {
                 glPushMatrix();
                     glTranslatef(+1.300 , +4.700 , 0 );
                     glRotatef(angle[2], 0, 1, 0);
-                    glRotatef(angle2[2], 1, 0, 1);
+                    glRotatef(angle2[2], 1, 0, 0);
                     glTranslatef(-1.300 , -4.700 , 0 );
                     //glTranslatef(teapotX, teapotY, 0);
                     glmDraw(right_arm, GLM_SMOOTH | GLM_MATERIAL | GLM_TEXTURE);
