@@ -1,8 +1,6 @@
 # depslib dependency file v1.0
-1686056793 source:c:\users\lisa\desktop\2023graphicsa\week17_final\main.cpp
+1686058092 source:c:\users\lisa\desktop\2023graphicsa\week17_final\main.cpp
 	<stdio.h>
-	<opencv/highgui.h>
-	<opencv/cv.h>
 	<GL/glut.h>
 	"glm.h"
 	"CMP3_MCI.h"

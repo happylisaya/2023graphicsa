@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <opencv/highgui.h>
-#include <opencv/cv.h>
+//#include <opencv/highgui.h>
+//#include <opencv/cv.h>
 #include <GL/glut.h>
 #include "glm.h"
 #include "CMP3_MCI.h"
@@ -14,7 +14,7 @@ const GLfloat light_position[] = { -15.0f, 50.0f, 100.0f, 1.0f };
 const GLfloat mat_ambient[]    = { 0.7f, 0.7f, 0.7f, 1.0f };
 const GLfloat mat_diffuse[]    = { 0.8f, 0.8f, 0.8f, 1.0f };
 const GLfloat mat_specular[]   = { 1.0f, 1.0f, 1.0f, 1.0f };
-const GLfloat high_shininess[] = { 0.2f };
+const GLfloat high_shininess[] = { 0.3f };
 
 
 void reshape(int w, int h) {
@@ -98,9 +98,10 @@ void keyboard(unsigned char key, int x, int y) {
         for(int i=0; i<12; i++){
             fprintf(fout, "%.2f ", angle[i] );
             fprintf(fout, "%.2f ", angle2[i] );
+            printf("%.2f ", angle[i]);
+            printf("%.2f ", angle2[i]);
         }
         fprintf(fout, "\n");
-        printf("ÄãŒ‘ÁË1ÐÐ\n");
     }
     if(key=='r'){
         if(fin==NULL) fin = fopen("motion.txt", "r");
@@ -167,8 +168,8 @@ void display() {
                 ///right_arm
                 glPushMatrix();
                     glTranslatef(+1.300 , +4.700 , 0 );
-                    glRotatef(angle[2], 0, 1, 0);
-                    glRotatef(angle2[2], 1, 0, 0);
+                    glRotatef(angle[2], 1, 0, 1);
+                    glRotatef(angle2[2], 0, 1, 0);
                     glTranslatef(-1.300 , -4.700 , 0 );
                     //glTranslatef(teapotX, teapotY, 0);
                     glmDraw(right_arm, GLM_SMOOTH | GLM_MATERIAL | GLM_TEXTURE);
