@@ -24,7 +24,7 @@ Ks 0.05 0.07 0.15
 Ns 0.06
 newmtl Popeye:blinnFleshSG
 illum 4
-Kd 1.00 0.65 0.52
+Kd 1.00 0.65 0.52 //
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
 Ni 1.00
