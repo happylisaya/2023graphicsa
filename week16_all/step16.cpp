@@ -30,28 +30,7 @@ FILE * fin = NULL;
 FILE * fout = NULL;
 float teapotX=0, teapotY=0, oldX=0, oldY=0;
 float angle[20]={}, angle2[20]={};
-float OldAngle[20]={}, NewAngle[20]={};
-float OldAngle2[20]={}, NewAngle2[20]={};
 int ID=0;
-void timer(int t) {
-    printf("t:%d\n", t);
-    glutTimerFunc(20, timer, t+1);
-    if(t%50==0){
-        if(fin==NULL) fin = fopen("motion.txt", "r");
-        for(int i=0; i<20; i++){
-            OldAngle[i] = NewAngle[i];
-            OldAngle2[i] = NewAngle2[i];
-            fscanf(fin, "%f", &NewAngle[i] );
-            fscanf(fin, "%f", &NewAngle2[i] );
-        }
-    }
-    float alpha = (t%50) / 50.0;
-    for(int i=0; i<20; i++){
-        angle[i] = alpha * NewAngle[i] + (1-alpha) * OldAngle[i];
-        angle2[i] = alpha * NewAngle2[i] + (1-alpha) * OldAngle2[i];
-    }
-    glutPostRedisplay();
-}
 void keyboard(unsigned char key, int x, int y) {
     if(key=='0') ID=0;
     if(key=='1') ID=1;
@@ -70,18 +49,7 @@ void keyboard(unsigned char key, int x, int y) {
             fprintf(fout, "%.2f ", angle2[i] );
         }
         fprintf(fout, "\n");
-        printf("ï¿½Aï¿½gï¿½F1ï¿½ï¿½\n");
-    }
-    if(key=='r'){
-        if(fin==NULL) fin = fopen("motion.txt", "r");
-        for(int i=0; i<20; i++){
-            fscanf(fin, "%f", &angle[i] );
-            fscanf(fin, "%f", &angle2[i] );
-        }
-        glutPostRedisplay();
-    }
-    if(key=='p'){
-        glutTimerFunc(0, timer, 0);
+        printf("ÄãŒ‘ÁË1ÐÐ\n");
     }
 }
 void mouse(int button, int state, int x, int y) {
@@ -96,6 +64,7 @@ void motion(int x, int y) {
     angle2[ID] += y - oldY;
     oldX = x;
     oldY = y;
+
     glutPostRedisplay();
 }
 void display() {

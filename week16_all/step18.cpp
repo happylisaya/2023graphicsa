@@ -13,16 +13,16 @@ GLMmodel * knee1 = NULL, * knee2 = NULL;
 GLMmodel * foot1 = NULL, * foot2 = NULL;
 int myTexture(char * filename)
 {
-    IplImage * img = cvLoadImage(filename);
-    cvCvtColor(img,img, CV_BGR2RGB);
-    glEnable(GL_TEXTURE_2D);
-    GLuint id;
-    glGenTextures(1, &id);
-    glBindTexture(GL_TEXTURE_2D, id);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    IplImage * img = cvLoadImage(filename); ///OpenCV讀圖
+    cvCvtColor(img,img, CV_BGR2RGB); ///OpenCV轉色彩 (需要cv.h)
+    glEnable(GL_TEXTURE_2D); ///1. 開啟貼圖功能
+    GLuint id; ///準備一個 unsigned int 整數, 叫 貼圖ID
+    glGenTextures(1, &id); /// 產生Generate 貼圖ID
+    glBindTexture(GL_TEXTURE_2D, id); ///綁定bind 貼圖ID
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); /// 貼圖參數, 超過包裝的範圖T, 就重覆貼圖
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); /// 貼圖參數, 超過包裝的範圖S, 就重覆貼圖
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); /// 貼圖參數, 放大時的內插, 用最近點
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); /// 貼圖參數, 縮小時的內插, 用最近點
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img->width, img->height, 0, GL_RGB, GL_UNSIGNED_BYTE, img->imageData);
     return id;
 }
@@ -34,7 +34,6 @@ float OldAngle[20]={}, NewAngle[20]={};
 float OldAngle2[20]={}, NewAngle2[20]={};
 int ID=0;
 void timer(int t) {
-    printf("t:%d\n", t);
     glutTimerFunc(20, timer, t+1);
     if(t%50==0){
         if(fin==NULL) fin = fopen("motion.txt", "r");
@@ -70,7 +69,7 @@ void keyboard(unsigned char key, int x, int y) {
             fprintf(fout, "%.2f ", angle2[i] );
         }
         fprintf(fout, "\n");
-        printf("�A�g�F1��\n");
+        printf("你寫了1行\n");
     }
     if(key=='r'){
         if(fin==NULL) fin = fopen("motion.txt", "r");
